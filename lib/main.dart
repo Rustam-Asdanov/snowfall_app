@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:snowfall_app/routes/about_app.dart';
+import 'package:snowfall_app/routes/exit_app.dart';
+import 'package:snowfall_app/routes/home_page.dart';
 
-void main(){
+void main() {
   runApp(
-    const MaterialApp(
+    MaterialApp(
       title: "Snowall App",
-      initialRoute: "/", 
+      initialRoute: "/",
       routes: {
-        
+        "/": (context) => HomePage(),
+        // "/signIn":(context) => SignIn(),
+        // "/signUp":(context) => SignUp(),
+        "/about": (context) => const AboutApp(),
+        "/exit": (context) => const ExitApp()
       },
-    )
+    ),
   );
 }
