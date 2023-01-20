@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import '../widgets/my_button.dart';
 
-class AboutApp extends StatelessWidget{
+class AboutApp extends StatelessWidget {
   const AboutApp({super.key});
 
   @override
@@ -9,13 +10,23 @@ class AboutApp extends StatelessWidget{
       appBar: AppBar(
         title: const Text("About the App"),
       ),
-      body: Column(
-        children: const <Widget>[
-          Text("data"),
-          ElevatedButton(
-            onPressed: null, 
-            child: Text("Go Back"))
-        ],
+      body: Material(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              const Text(textAlign: TextAlign.center, "data"),
+              MyButton(
+                  text: "Back",
+                  color: Colors.blueAccent,
+                  myFunc: () {
+                    Navigator.pushNamed(context, "/");
+                  }),
+            ],
+          ),
+        ),
       ),
     );
   }

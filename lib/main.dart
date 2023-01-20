@@ -12,8 +12,8 @@ void main() {
         "/": (context) => HomePage(),
         // "/signIn":(context) => SignIn(),
         // "/signUp":(context) => SignUp(),
-        "/about": (context) => const AboutApp(),
-        "/exit": (context) => const ExitApp()
+        "/about": (context) => AboutApp(),
+        "/exit": (context) => ExitApp()
       },
     ),
   );
