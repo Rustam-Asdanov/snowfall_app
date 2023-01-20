@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class AboutApp extends StatelessWidget{
+  const AboutApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -9,7 +10,7 @@ class AboutApp extends StatelessWidget{
         title: const Text("About the App"),
       ),
       body: Column(
-        children: <Widget>[
+        children: const <Widget>[
           Text("data"),
           ElevatedButton(
             onPressed: null, 
