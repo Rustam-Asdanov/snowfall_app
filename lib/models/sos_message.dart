@@ -1,9 +1,14 @@
-import 'dart:html';
+import 'package:location/location.dart';
 
-class SosMessage{
+class SosMessage {
   final String id;
   final String text;
-  final Location location;
+  final Future<LocationData> locationData;
 
-  SosMessage(this.id, this.text, this.location);
+  SosMessage({required this.id,required this.text, required this.locationData});
+
+  factory SosMessage.fromJson(Map<String, dynamic> json) {
+    return SosMessage(
+        id: json["id"], text: json["text"], locationData: json["location"]);
+  }
 }

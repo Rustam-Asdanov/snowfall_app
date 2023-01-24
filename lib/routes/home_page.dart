@@ -13,6 +13,9 @@ class HomePage extends StatelessWidget {
         Text("Snowfall"),
         ElevatedButton(onPressed: null, child: Text("Sign In")),
         ElevatedButton(onPressed: null, child: Text("Sign Up")),
+        ElevatedButton(onPressed: (){
+          Navigator.pushNamed(context, "/messages");
+        }, child: Text("Messages")),
         ElevatedButton(
             onPressed: () {
               Navigator.pushNamed(context, "/about");
