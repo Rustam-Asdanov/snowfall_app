@@ -5,6 +5,8 @@ import 'package:snowfall_app/routes/exit_app.dart';
 import 'package:snowfall_app/routes/home_page.dart';
 import 'package:snowfall_app/routes/sign_in.dart';
 
+import './routes/connection_device.dart';
+
 void main() {
   runApp(
     MaterialApp(
@@ -16,6 +18,7 @@ void main() {
         // "/signUp":(context) => SignUp(),
         "/messages":(context) => EmergencyMessages(),
         "/about": (context) => AboutApp(),
+        "/connectdevice": (context) => ConnectionDevice(),
         "/exit": (context) => ExitApp()
       },
     ),

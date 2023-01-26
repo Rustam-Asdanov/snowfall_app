@@ -12,23 +12,61 @@ class EmergencyMessages extends StatefulWidget {
   State<EmergencyMessages> createState() => _EmergencyMessagesState();
 }
 
-Future<SosMessage> sendData(String text) async {
-  print("object" + text);
+Future<SosMessage> sendData(
+    String text, Future<LocationData> locationData) async {
   final response = await http.post(
     Uri.parse("http://10.0.2.2:3000/api/v1/"),
     headers: <String, String>{
       "Content-Type": "application/json; charset=UTF-8",
     },
-    body: jsonEncode(<String, String>{
-      "message": text,
-    }),
+    body: jsonEncode(
+        <String, String>{"message": text, "location": locationData.toString()}),
   );
 
   if (response.statusCode == 201) {
     return SosMessage.fromJson(jsonDecode(response.body));
   } else {
-    return SosMessage(id: "Nan", text: "Fail", locationData: Location().getLocation());
+    return SosMessage(
+        id: "Nan", text: "Fail", locationData: Location().getLocation());
   }
+}
+
+Future<SosMessage> getData() async {
+  final response = await http.get(Uri.parse("http://10.0.2.2:3000/api/v1/"));
+
+  if (response.statusCode == 201) {
+    return SosMessage.fromJson(jsonDecode(response.body));
+  } else {
+    return SosMessage(
+        id: "Nan", text: "Fail", locationData: Location().getLocation());
+  }
+}
+
+Future<LocationData> locationReceiving() async {
+  Location location = new Location();
+
+  bool _serviceEnabled;
+  PermissionStatus _permissionGranted;
+  LocationData _locationData;
+
+  _serviceEnabled = await location.serviceEnabled();
+  if (!_serviceEnabled) {
+    _serviceEnabled = await location.requestService();
+    if (!_serviceEnabled) {
+      // you should write something
+    }
+  }
+
+  _permissionGranted = await location.hasPermission();
+  if (_permissionGranted == PermissionStatus.denied) {
+    _permissionGranted = await location.requestPermission();
+    if (_permissionGranted != PermissionStatus.granted) {
+      // you should write something
+    }
+  }
+
+  _locationData = await location.getLocation();
+  return _locationData;
 }
 
 class _EmergencyMessagesState extends State<EmergencyMessages> {
@@ -39,6 +77,8 @@ class _EmergencyMessagesState extends State<EmergencyMessages> {
     SosMessage(id: "2", text: "Heey", locationData: Location().getLocation())
   ];
 
+  // List<SosMessage> messageList = getData();
+
   void submitData() {
     final enteredMessage = messageController.text;
 
@@ -47,12 +87,11 @@ class _EmergencyMessagesState extends State<EmergencyMessages> {
     }
 
     setState(() {
-      messageList.add(SosMessage(
-          id: "3",
-          text: enteredMessage,
-          locationData: Location().getLocation()));
-      const String url ="http://localhost:3000/api/v1/";
-      print(sendData(enteredMessage));
+      // messageList.add(SosMessage(
+      //     id: "3",
+      //     text: enteredMessage,
+      //     locationData: Location().getLocation()));
+      print(sendData(enteredMessage, locationReceiving()));
     });
   }
 
