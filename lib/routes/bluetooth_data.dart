@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
 
@@ -7,6 +9,7 @@ class BluetoothData extends StatefulWidget {
 }
 
 class _BluetoothDataState extends State<BluetoothData> {
+  late List<BluetoothService> bluetoothServiceList;
   late BluetoothService bluetoothService;
   int scanDuration = 10;
   bool isConnected = false;
@@ -15,6 +18,18 @@ class _BluetoothDataState extends State<BluetoothData> {
   void initState() {
     FlutterBlue.instance.startScan(timeout: Duration(seconds: scanDuration));
     super.initState();
+  }
+
+  void getDataFromBangle() {
+    bluetoothServiceList.forEach((service) async {
+      var characteristics = service.characteristics;
+      for (BluetoothCharacteristic bc in characteristics) {
+        await bc.setNotifyValue(true);
+        bc.value.listen((value) {
+          print('-----------inside value --------${utf8.decode(value)}');
+        });
+      }
+    });
   }
 
   @override
@@ -60,12 +75,17 @@ class _BluetoothDataState extends State<BluetoothData> {
                             //                   })
                             //         });
 
-                            isConnected =
-                                await result.device.connect().then((value) {
+                            isConnected = await result.device
+                                .connect()
+                                .then((value) async {
                               print("yes");
+                              bluetoothServiceList =
+                                  await result.device.discoverServices();
                               return true;
                             }).catchError((e) => false);
+
                             print('------------${isConnected}');
+                            getDataFromBangle();
                           },
                         ),
                       ],
