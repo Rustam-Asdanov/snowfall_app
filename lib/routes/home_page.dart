@@ -13,14 +13,19 @@ class HomePage extends StatelessWidget {
         Text("Snowfall"),
         ElevatedButton(onPressed: null, child: Text("Sign In")),
         ElevatedButton(onPressed: null, child: Text("Sign Up")),
-        ElevatedButton(onPressed: (){
-          Navigator.pushNamed(context, "/messages");
-        }, child: Text("Messages")),
+        ElevatedButton(
+            onPressed: () {
+              Navigator.pushNamed(context, "/messages");
+            },
+            child: Text("Messages")),
         ElevatedButton(
             onPressed: () {
               Navigator.pushNamed(context, "/about");
             },
             child: Text("About")),
+        ElevatedButton(
+            onPressed: () => {Navigator.pushNamed(context, "/blue_data")},
+            child: const Text("Bluetooth Data")),
         ElevatedButton(
             onPressed: () {
               Navigator.pushNamed(context, "/exit");

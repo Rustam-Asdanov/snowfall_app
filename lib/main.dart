@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:snowfall_app/routes/about_app.dart';
+import 'package:snowfall_app/routes/bluetooth_data.dart';
 import 'package:snowfall_app/routes/emergency_messages.dart';
 import 'package:snowfall_app/routes/exit_app.dart';
 import 'package:snowfall_app/routes/home_page.dart';
@@ -12,9 +13,10 @@ void main() {
       initialRoute: "/",
       routes: {
         "/": (context) => HomePage(),
-        "/signIn":(context) => SignIn(),
+        "/signIn": (context) => SignIn(),
         // "/signUp":(context) => SignUp(),
-        "/messages":(context) => EmergencyMessages(),
+        "/blue_data": (context) => BluetoothData(),
+        "/messages": (context) => EmergencyMessages(),
         "/about": (context) => AboutApp(),
         "/exit": (context) => ExitApp()
       },
