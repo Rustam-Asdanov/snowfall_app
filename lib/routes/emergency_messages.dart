@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:location/location.dart';
 import "dart:convert";
 import 'package:snowfall_app/models/sos_message.dart';
+import 'package:snowfall_app/routes/bluetooth_data.dart';
 import 'package:snowfall_app/routes/messages.dart';
 import "package:http/http.dart" as http;
 
@@ -27,7 +28,8 @@ Future<SosMessage> sendData(String text) async {
   if (response.statusCode == 201) {
     return SosMessage.fromJson(jsonDecode(response.body));
   } else {
-    return SosMessage(id: "Nan", text: "Fail", locationData: Location().getLocation());
+    return SosMessage(
+        id: "Nan", text: "Fail", locationData: Location().getLocation());
   }
 }
 
@@ -40,7 +42,7 @@ class _EmergencyMessagesState extends State<EmergencyMessages> {
   ];
 
   void submitData() {
-    final enteredMessage = messageController.text;
+    final enteredMessage = BluetoothDataState.myData;
 
     if (enteredMessage.isEmpty) {
       return;
@@ -51,7 +53,9 @@ class _EmergencyMessagesState extends State<EmergencyMessages> {
           id: "3",
           text: enteredMessage,
           locationData: Location().getLocation()));
-      const String url ="http://localhost:3000/api/v1/";
+      // const String url ="http://localhost:3000/api/v1/";
+      const String url =
+          "https://my-app-b4608-default-rtdb.firebaseio.com/messages";
       print(sendData(enteredMessage));
     });
   }

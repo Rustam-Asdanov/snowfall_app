@@ -5,14 +5,15 @@ import 'package:flutter_blue/flutter_blue.dart';
 
 class BluetoothData extends StatefulWidget {
   @override
-  State<BluetoothData> createState() => _BluetoothDataState();
+  State<BluetoothData> createState() => BluetoothDataState();
 }
 
-class _BluetoothDataState extends State<BluetoothData> {
+class BluetoothDataState extends State<BluetoothData> {
   late List<BluetoothService> bluetoothServiceList;
   late BluetoothService bluetoothService;
   int scanDuration = 10;
-  bool isConnected = false;
+  static var myData = "";
+  static bool isConnected = false;
 
   @override
   void initState() {
@@ -27,6 +28,7 @@ class _BluetoothDataState extends State<BluetoothData> {
         await bc.setNotifyValue(true);
         bc.value.listen((value) {
           print('-----------inside value --------${utf8.decode(value)}');
+          myData = utf8.decode(value);
         });
       }
     });
@@ -57,28 +59,9 @@ class _BluetoothDataState extends State<BluetoothData> {
                         ElevatedButton(
                           child: const Text("Connect"),
                           onPressed: () async {
-                            // result.device
-                            //     .connect(
-                            //         timeout: const Duration(seconds: 5),
-                            //         autoConnect: false)
-                            //     .then((value) => {
-                            //           result.device
-                            //               .discoverServices()
-                            //               .then((value) => {
-                            //                     value.forEach((service) {
-                            //                       service.characteristics
-                            //                           .forEach((text) {
-                            //                         print("---------------");
-                            //                         print(text);
-                            //                       });
-                            //                     })
-                            //                   })
-                            //         });
-
                             isConnected = await result.device
                                 .connect()
                                 .then((value) async {
-                              print("yes");
                               bluetoothServiceList =
                                   await result.device.discoverServices();
                               return true;
