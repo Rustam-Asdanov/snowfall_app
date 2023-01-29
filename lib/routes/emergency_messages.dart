@@ -17,28 +17,47 @@ class EmergencyMessages extends StatefulWidget {
 class _EmergencyMessagesState extends State<EmergencyMessages> {
   final messageController = TextEditingController();
 
-  List<SosMessage> messageList = [
-    SosMessage(id: "1", text: "Help", locationData: Location().getLocation()),
-    SosMessage(id: "2", text: "Heey", locationData: Location().getLocation())
-  ];
+  List<SosMessage> messageList = [];
+
+  int messageCounter = 0;
 
   @override
   void initState() {
+    getData();
     var bluetoothServiceList = BluetoothDataState.bluetoothServiceList;
     bluetoothServiceList.forEach((service) async {
       var characteristics = service.characteristics;
       for (BluetoothCharacteristic bc in characteristics) {
         await bc.setNotifyValue(true);
         bc.value.listen((value) {
-          print('-----------inside value --------${utf8.decode(value)}');
           String myData = utf8.decode(value);
-          if (myData.isNotEmpty) {
+          if (myData.isNotEmpty && messageCounter == 0) {
             sendData(myData);
+            messageCounter++;
+            print('-----------inside value --------${utf8.decode(value)}');
           }
         });
       }
     });
     super.initState();
+  }
+
+  void getData() async {
+    final response = await http
+        .get(Uri.parse("https://enigmatic-forest-64947.herokuapp.com/api/v1"));
+
+    if (response.statusCode == 200) {
+      var parsed = json.decode(response.body);
+
+      setState(() {
+        messageList =
+            (parsed as List).map((data) => SosMessage.fromJson(data)).toList();
+      });
+    } else {
+      messageList = [
+        SosMessage(id: "0", message: "Empty", latitude: 0, longitude: 0),
+      ];
+    }
   }
 
   Future<SosMessage> sendData(String text) async {
@@ -47,22 +66,21 @@ class _EmergencyMessagesState extends State<EmergencyMessages> {
     double? longitude = myLocation.longitude;
 
     final response = await http.post(
-      Uri.parse("http://10.0.2.2:3000/api/v1/"),
+      Uri.parse("https://enigmatic-forest-64947.herokuapp.com/api/v1"),
       headers: <String, String>{
         "Content-Type": "application/json; charset=UTF-8",
       },
       body: jsonEncode(<String, dynamic>{
-        "message": text,
+        "message": text.trim(),
         "latitude": latitude,
-        "longtitude": longitude
+        "longitude": longitude
       }),
     );
 
     if (response.statusCode == 201) {
       return SosMessage.fromJson(jsonDecode(response.body));
     } else {
-      return SosMessage(
-          id: "Nan", text: "Fail", locationData: Location().getLocation());
+      return SosMessage(id: "0", message: "Empty", latitude: 0, longitude: 0);
     }
   }
 
@@ -80,7 +98,7 @@ class _EmergencyMessagesState extends State<EmergencyMessages> {
             Messages(sosMessageList: messageList),
             Column(
               children: [
-                ElevatedButton(onPressed: () {}, child: const Text("Start"))
+                ElevatedButton(onPressed: getData, child: const Text("Refresh"))
               ],
             )
           ],

@@ -11,14 +11,19 @@ class Messages extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 400,
+      height: 600,
       child: ListView.builder(
         itemBuilder: (ctx, index) {
           return Card(
-            child: Column(
-              children: <Widget>[
-                Text(sosMessageList[index].text),
-              ],
+            child: Container(
+              height: 50,
+              child: Row(
+                children: <Widget>[
+                      const Icon(Icons.warning),
+                      const SizedBox(height: 40),
+                      Text(sosMessageList[index].message),
+                ],
+              ),
             ),
           );
         },
