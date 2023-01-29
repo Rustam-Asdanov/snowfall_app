@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_blue/flutter_blue.dart';
 import 'package:location/location.dart';
 import "dart:convert";
 import 'package:snowfall_app/models/sos_message.dart';
@@ -13,26 +14,6 @@ class EmergencyMessages extends StatefulWidget {
   State<EmergencyMessages> createState() => _EmergencyMessagesState();
 }
 
-Future<SosMessage> sendData(String text) async {
-  print("object" + text);
-  final response = await http.post(
-    Uri.parse("http://10.0.2.2:3000/api/v1/"),
-    headers: <String, String>{
-      "Content-Type": "application/json; charset=UTF-8",
-    },
-    body: jsonEncode(<String, String>{
-      "message": text,
-    }),
-  );
-
-  if (response.statusCode == 201) {
-    return SosMessage.fromJson(jsonDecode(response.body));
-  } else {
-    return SosMessage(
-        id: "Nan", text: "Fail", locationData: Location().getLocation());
-  }
-}
-
 class _EmergencyMessagesState extends State<EmergencyMessages> {
   final messageController = TextEditingController();
 
@@ -41,23 +22,48 @@ class _EmergencyMessagesState extends State<EmergencyMessages> {
     SosMessage(id: "2", text: "Heey", locationData: Location().getLocation())
   ];
 
-  void submitData() {
-    final enteredMessage = BluetoothDataState.myData;
-
-    if (enteredMessage.isEmpty) {
-      return;
-    }
-
-    setState(() {
-      messageList.add(SosMessage(
-          id: "3",
-          text: enteredMessage,
-          locationData: Location().getLocation()));
-      // const String url ="http://localhost:3000/api/v1/";
-      const String url =
-          "https://my-app-b4608-default-rtdb.firebaseio.com/messages";
-      print(sendData(enteredMessage));
+  @override
+  void initState() {
+    var bluetoothServiceList = BluetoothDataState.bluetoothServiceList;
+    bluetoothServiceList.forEach((service) async {
+      var characteristics = service.characteristics;
+      for (BluetoothCharacteristic bc in characteristics) {
+        await bc.setNotifyValue(true);
+        bc.value.listen((value) {
+          print('-----------inside value --------${utf8.decode(value)}');
+          String myData = utf8.decode(value);
+          if (myData.isNotEmpty) {
+            sendData(myData);
+          }
+        });
+      }
     });
+    super.initState();
+  }
+
+  Future<SosMessage> sendData(String text) async {
+    var myLocation = await Location().getLocation();
+    double? latitude = myLocation.latitude;
+    double? longitude = myLocation.longitude;
+
+    final response = await http.post(
+      Uri.parse("http://10.0.2.2:3000/api/v1/"),
+      headers: <String, String>{
+        "Content-Type": "application/json; charset=UTF-8",
+      },
+      body: jsonEncode(<String, dynamic>{
+        "message": text,
+        "latitude": latitude,
+        "longtitude": longitude
+      }),
+    );
+
+    if (response.statusCode == 201) {
+      return SosMessage.fromJson(jsonDecode(response.body));
+    } else {
+      return SosMessage(
+          id: "Nan", text: "Fail", locationData: Location().getLocation());
+    }
   }
 
   @override
@@ -74,13 +80,7 @@ class _EmergencyMessagesState extends State<EmergencyMessages> {
             Messages(sosMessageList: messageList),
             Column(
               children: [
-                TextField(
-                  autocorrect: true,
-                  autofocus: true,
-                  controller: messageController,
-                  decoration: InputDecoration(labelText: "Message"),
-                ),
-                ElevatedButton(onPressed: submitData, child: Text("Add"))
+                ElevatedButton(onPressed: () {}, child: const Text("Start"))
               ],
             )
           ],

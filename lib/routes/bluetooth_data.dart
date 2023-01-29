@@ -9,7 +9,7 @@ class BluetoothData extends StatefulWidget {
 }
 
 class BluetoothDataState extends State<BluetoothData> {
-  late List<BluetoothService> bluetoothServiceList;
+  static late List<BluetoothService> bluetoothServiceList;
   late BluetoothService bluetoothService;
   int scanDuration = 10;
   static var myData = "";
@@ -21,18 +21,21 @@ class BluetoothDataState extends State<BluetoothData> {
     super.initState();
   }
 
-  void getDataFromBangle() {
-    bluetoothServiceList.forEach((service) async {
-      var characteristics = service.characteristics;
-      for (BluetoothCharacteristic bc in characteristics) {
-        await bc.setNotifyValue(true);
-        bc.value.listen((value) {
-          print('-----------inside value --------${utf8.decode(value)}');
-          myData = utf8.decode(value);
-        });
-      }
-    });
-  }
+  // String getDataFromBangle() {
+  //   String message = "empty";
+  //   bluetoothServiceList.forEach((service) async {
+  //     var characteristics = service.characteristics;
+  //     for (BluetoothCharacteristic bc in characteristics) {
+  //       await bc.setNotifyValue(true);
+  //       bc.value.listen((value) {
+  //         print('-----------inside value --------${utf8.decode(value)}');
+  //         myData = utf8.decode(value);
+  //         message = utf8.decode(value);
+  //       });
+  //     }
+  //   });
+  //   return message;
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +71,7 @@ class BluetoothDataState extends State<BluetoothData> {
                             }).catchError((e) => false);
 
                             print('------------${isConnected}');
-                            getDataFromBangle();
+                            // getDataFromBangle();
                           },
                         ),
                       ],
