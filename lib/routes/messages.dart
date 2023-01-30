@@ -19,9 +19,12 @@ class Messages extends StatelessWidget {
               height: 50,
               child: Row(
                 children: <Widget>[
-                      const Icon(Icons.sos),
-                      const SizedBox(height: 40),
-                      Text(sosMessageList[index].message),
+                  const Icon(Icons.sos),
+                  SizedBox(
+                    width: 40,
+                  ),
+                  const SizedBox(height: 40),
+                  Text(sosMessageList[index].message),
                 ],
               ),
             ),

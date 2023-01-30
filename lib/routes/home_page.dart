@@ -17,16 +17,24 @@ class HomePage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               Image.network(
-                  "https://cdn-icons-png.flaticon.com/128/2336/2336319.png",width: 100, height: 100,),
-                  SizedBox(height: 30,),
+                "https://cdn-icons-png.flaticon.com/128/2336/2336319.png",
+                width: 100,
+                height: 100,
+              ),
+              SizedBox(
+                height: 30,
+              ),
               const ElevatedButton(
                   onPressed: null, child: Text("Sign In (in progress...)")),
               const ElevatedButton(
                   onPressed: null, child: Text("Sign Up (in progress...)")),
-              if (BluetoothDataState.isConnected)
               ElevatedButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, "/messages");
+                    if (BluetoothDataState.isConnected) {
+                      Navigator.pushNamed(context, "/messages");
+                    } else {
+                      Navigator.pushNamed(context, "/blue_data");
+                    }
                   },
                   child: Text("Messages")),
               ElevatedButton(

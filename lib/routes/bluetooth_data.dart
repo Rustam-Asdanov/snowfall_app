@@ -37,16 +37,8 @@ class BluetoothDataState extends State<BluetoothData> {
   //   return message;
   // }
 
-  
-
   @override
   Widget build(BuildContext context) {
-    Widget okButton = TextButton(
-    child: Text("OK"),
-    onPressed: () { 
-      Navigator.pushNamed(context, "/");
-    },
-  );
     return Scaffold(
       appBar: AppBar(title: const Text("Blue")),
       body: Column(
@@ -79,14 +71,6 @@ class BluetoothDataState extends State<BluetoothData> {
                             }).catchError((e) => false);
 
                             print('------------${isConnected}');
-                            AlertDialog alert = AlertDialog(
-                              title: Text("My title"),
-                              content: Text("This is my message."),
-                              actions: [
-                                okButton,
-                              ],
-                            );
-                            // getDataFromBangle();
                           },
                         ),
                       ],
@@ -97,7 +81,7 @@ class BluetoothDataState extends State<BluetoothData> {
           ),
           const Spacer(),
           Container(
-            child: Text("Your data: "),
+            child: Text('Status: ${isConnected ? 'Success' : ''}'),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
